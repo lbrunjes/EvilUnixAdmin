@@ -1,0 +1,39 @@
+/*
+
+
+
+
+
+*/
+
+
+public class level{
+
+	public goal Goal;
+	public var walls = [];
+	public int w = width*2;
+	public int h = height*2;
+	
+	public level(string jsonname){
+		Goal = new goal(0, -200);
+		
+		
+		walls.push(new wall(0,-64));
+		for (int i = 0; i < 20 ; i++){
+			wall tmp = new wall(random() *w - width, random()*h- height);
+			if((tmp.x > 64 || tmp.x<-64 ) && (tmp.y>64 || tmp.y<-64)){
+				walls.push(tmp);
+			}
+		}
+	
+	}
+	
+	public void draw(){
+		Goal.draw();
+		for(int i = 0; i < walls.length; i++){
+			walls[i].draw();
+		}
+	}
+
+
+}

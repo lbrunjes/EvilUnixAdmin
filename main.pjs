@@ -1,0 +1,253 @@
+/*
+
+
+ @pjs preload="img/main.png, img/dude_front.png, img/dude_back.png";
+
+
+*/
+
+int lastframe=0;
+float delta = 0 ;
+
+void setup(){
+	size(wSize[0],wSize[1]);
+	player = new player();
+	level = new level("start");
+	enemies.push(new enemy(-100,-100, [[-200,-100],[100,-100]],20));
+	img.main = loadImage("img/main.png");
+	img.dude = {};
+	img.dude.front = loadImage("img/dude_front.png");
+	img.dude.back  = loadImage("img/dude_back.png");
+}
+void draw(){
+	delta = (lastframe-millis())/1000;
+	lastframe = millis();
+	background(0);
+	switch(gameState){
+		case LOADING:
+			drawLoading();
+		break;
+		case  MENU:
+			drawMenu();
+		break;
+		
+		case CHARACTER:
+			drawPicker();
+			//updatePicker(delta);
+		break;
+		
+		case GAME:
+			drawGame();
+			updateGame(delta);
+	
+		break;
+		
+		case LOST:
+			drawLost();
+		break;
+		
+		case WON:
+			drawWon();
+		break;
+	}
+}
+
+void drawLoading(){
+	
+	fill(0,255,0);
+	text("...", width/3,height/3);
+	
+	//TODO check loading completed;
+	if(img.main && img.dude.front && img.dude.back){
+		gameState= MENU;
+	}
+}
+
+void drawMenu(){
+	image(img.main,0,0);
+	textSize(48);
+	fill(255);
+	text("EVIL LUNIX \nSYSTEM ADMIN",48,48);
+	textSize(24);
+	text("PRESS ANY KEY TO PLAY", 48,height/4*3);
+}
+
+void drawPicker(){
+	image(img.main,0,0);
+	textSize(48);
+	fill(255);
+	text("EVIL LUNIX \nSYSTEM ADMIN",48,48);
+	textSize(24);
+	text("THE WINDOWS ADMINS STOLE\nYOUR VENDING MACHINE.", 48,height/4*2);
+	text("GET THE SNACKY CAKES \nWITHOUT ANY MORE TROUBLE TICKETS\nAVOID LUSERS\nAVOID FLYING TROUBLE TICKETS", 48,height/4*3);
+}
+
+void drawGame()
+{
+
+	pushMatrix();
+		translate(width/2,height/2);
+		translate(-1* player.x,-1* player.y);
+	
+		//draw the level;
+		if(level){
+			level.draw();
+		}
+		//draw tenemies
+		for(int i =0;i < enemies.length;i++){
+			enemies[i].draw();
+		}
+		//drwa teh player
+		player.draw();
+		
+		//draw any effects;
+		for(int i =0;i < effects.length;i++){
+			effects[i].draw();
+		}
+	popMatrix();
+}
+void updateGame(float delta){
+	
+	void rm = [];
+	player.update(delta);
+	
+	for(int i = 0; i < effects.length;i++){
+		effects[i].update(delta);
+		if(effects[i].collides){
+			if(!effects[i].friendly){
+				effects[i].collide(player);
+			}
+			else{
+				for(int j = 0; j < enemies.length;j++){
+					effects[i].collide(enemies[j]);
+				}
+			}
+		}
+		if(effects[i].remove){
+			rm.push(i);
+		}
+	}
+	
+	removeEffects(rm);
+	rm =[];
+	
+	for(int i = 0; i < enemies.length;i++){
+		enemies[i].update(delta);
+		if(enemies[i].collides){
+			enemies[i].collide(player);
+			
+			//effects already removed all the fun times.
+			
+		}
+		if(enemies[i].remove){
+			rm.push(i);
+		}
+	}
+	removeEnemies(rm);
+
+	if(player.remove){
+		player.onRemove();
+	}
+}
+
+void drawWon(){
+	image(img.main,0,0);
+	fill(0,255,0);
+	text("WON", width/3,height/3);
+}
+
+void drawLost(){
+	background(0);
+	if(!theticket){
+		theticket = new troubleTicket();
+	}
+
+	theticket.draw();
+}
+
+void mouseClicked(){
+	if(gameState == GAME){
+		player.click()
+		
+	}
+}
+void mouseWorldCoords(){
+return [mouseX -width/2 + player.x, mouseY -height/2+player.y];
+}
+
+void addEffect(effect e)
+{
+	effects.push(e);
+}
+void removeEffects(var rmlist)
+{
+	for(int i = rmlist.length -1 ;i >=0 ;i--){
+		effects.splice(rmlist[i],1)[0].onRemove();
+	}
+}
+void removeEnemies(var rmlist)
+{
+	for(int i = rmlist.length -1 ;i >=0 ;i--){
+		enemies.splice(rmlist[i],1)[0].onRemove();
+	}
+}
+
+bool canMove(float x, float y, worldObject o)
+{
+	bool okay=x > level.w/-2 && 
+			x<level.w/2 && 
+			y > level.h/-2 && 
+			y< level.h/2;
+	
+	
+	for(int  i = 0; i < level.walls.length && okay;i++){
+		if(level.walls[i].inside(x,y, o)){
+			okay =false;
+		}
+	}
+	
+	
+	
+	return okay;
+}
+void keyPressed(){
+
+//	console.log("Pressed "+key + "keyCode:"+keyCode, gameState);
+	switch(gameState){
+		case LOADING:
+		
+		break;
+		case  MENU:
+			gameState++;
+		break;
+		
+		case CHARACTER:
+			//handleCharPress(keyCode);
+			reset();
+			
+			gameState++;
+		break;
+		
+		case GAME:
+			player.handleKeyPress(keyCode);
+		break;
+		
+	
+		case WON:
+			gameState= MENU;
+		break;
+			case LOST:
+			default:
+			break;
+	}
+
+}
+
+void reset(){
+	player.x = 0;
+	player.y=0;
+	player.remove =false;
+	effects = [];
+	theticket =false;
+}
+ 

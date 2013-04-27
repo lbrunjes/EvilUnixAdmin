@@ -1,0 +1,114 @@
+/*
+ the game character;
+
+
+
+*/
+class player extends worldObject{
+	int gender =0;
+	PImage skin = false;
+	PImage beard = false;
+	PImage hair = false;
+	PImage shoes = false;
+	PImage pants = false;
+	PImage shirt = false;
+	PImage head = false;
+	String name = false;
+	weapon wep;
+	
+	public player(){
+		x=0;
+		y=0;
+		speed=4;
+		wep = new weapon();
+		wep.projFriendly =true;
+		collides =true;
+		friendly =true;
+		f = color(0,0,255);
+		s = color(255);
+	}
+	
+	public void handleKeyPress(int code){
+		
+		switch(code){
+			case 39:
+			case 65:
+				if(canMove(x+speed, y, this)){
+					x+=speed;
+				}
+			break;
+			case 37:
+			case 87:
+				if(canMove(x-speed, y, this)){
+					x-=speed;
+				}
+			break;
+			case 40:
+			case 68:
+				if(canMove(x, y+speed, this)){
+					y+=speed;
+				}
+			break;
+			case 38:
+			case 83:
+				if(canMove(x, y-speed, this)){
+					y-=speed;
+				}
+			break;
+			
+			case 32://space
+			case 10://enter
+			
+				click();
+			break;
+
+		}		
+	
+	}
+	
+	public void update(float deltaT){
+		var m = mouseWorldCoords();
+		
+		r = atan2( y - m[1],x- m[0] );
+		
+		if(level.Goal.collide(this)){
+			//TODO display some sort of victory note.
+			gameState =WON;
+		}
+		
+	}
+	
+	public void draw(){
+		fill(f);
+		stroke(s);
+		pushMatrix();
+			translate(x,y);
+			//rotate(r);
+			rectMode(CENTER);
+			if(r >0 && r <PI){
+				image(img.dude.back, w/-2,h/-2,w,h);
+			}
+			else{
+				image(img.dude.front,w/-2,h/-2,w,h);
+			}
+			
+			if(wep){
+				wep.draw();
+			}
+		popMatrix();
+	}
+	
+	public void click(){
+		
+		var bulletorigin = [x , y-h/2];
+	//	console.log(wep,bulletorigin);
+		if(wep){
+			wep.fire(bulletorigin, r);
+		}
+		
+	}
+	
+	public void onRemove(){
+		gameState = LOST;
+	}
+}
