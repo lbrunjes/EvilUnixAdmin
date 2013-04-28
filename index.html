@@ -2,56 +2,126 @@
 <html>
 <head>
 <title>Evil Lunix System Admin</title>
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="http://housemark.co/css/housemark-default.css?v=1.0" media="all"/>
 
+<style>
+body{
+
+	background:#333;
+}
+ canvas{
+ 	width:640px;
+ 	height:480px;
+ 	background:#000;
+ }
+ #content{
+ 	border:1px solid #eee; 
+ 	background:#fff
+ }
+ #main{
+ 	text-align:center;
+ }
+
+ #header img{
+ 	width:32px;
+ 	height:32px;
+ }
+ #instructions,#faq{
+ 	padding:1em;
+ }
+ ol,ul{
+ 	margin-left:2em;
+ }
+ strong{
+ 	font-weight:bold;
+ }
 </style>
 <script type="text/javascript" src="../processing.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
-var LOADING=0;
-var MENU=1;
-var CHARACTER=2;
-var GAME=3;
-var LOST=4;
-var WON=5;
-var wSize=[640,480];
-var gameState=LOADING;
-var stateSwapTime= 0;
-var theticket=null;
+	var LOADING=0;
+	var MENU=1;
+	var CHARACTER=2;
+	var GAME=3;
+	var LOST=4;
+	var WON=5;
+	var INTRO = 6;
+	var wSize=[640,480];
+	var gameState=LOADING;
+	var stateSwapTime= 0;
+	var theticket=null;
+	var firstLevel = "start";
 
-var player = {
-	draw:function(){
-		rect(0,0,10,10);
+	var player = {
+		draw:function(){
+			rect(0,0,10,10);
+		}
 	}
-}
-var score =0;
+	var score =0;
 
-var img={};
+	var img={};
 
-var level=null;
-var enemies =[];
-var effects =[];
-
-
-
+	var thelevel=null;
 </script>
 
 </head>
 <body>
-
-<canvas id="canvas" style="background:#555;" data-processing-sources="
-main.pjs 
-worldObject.pjs
-effect.pjs
-weapon.pjs 
-player.pjs 
-enemy.pjs 
-goal.pjs
-wall.pjs
-level.pjs
-ticket.pjs
- "
- ></canvas>
-
+<div id="content">
+	<header id="header">
+		<img src="http://housemark.co/images/translogo_fff.png" alt="housemark logo" id="mainlogo"/>
+	</header>
+	<h1>Evil Lunix System Admin</h1>
+	<div id="main">
+		<canvas id="canvas" style="background:#555;" data-processing-sources="
+		main.pjs 
+		worldObject.pjs
+		effect.pjs
+		weapon.pjs 
+		player.pjs 
+		enemy.pjs 
+		goal.pjs
+		wall.pjs
+		level.pjs
+		ticket.pjs
+		movie.pjs
+		 "
+		 >
+		 	<img src="img/winadmin.png" alt=":("/>
+		 	<p>Your browser does support canvas so you cant play</p>
+		 </canvas>
+	</div> 
+	<div id="sound">
+		<audio src="snd/click.ogg" id="steps" loop="true"></audio>
+		<audio src="snd/type.ogg" id="type" loop="true"></audio>
+		<audio src="snd/ugh.ogg" id="ugh" ></audio>
+	</div>
+	<div id="instructions">
+		<h3>Instructions</h3>
+		<p>Move using the arrow keys(↑←→↓) or(WASD), go up stairs, find the Vending machine, accquire snacky cakes, win</p>
+		<h4> Tips</h4>
+		<ol>
+			<li>Avoid users, they make trouble tickets</li>
+			<li>Keep an eye out for flying touble tickets</li>
+			<li>Always do your own trouble tickets immedately. It keeps users out of our office.</li>
+			<li>Never quit searching for snacky cakes</li>
+		</ol>
+	</div>
+	<div id="faq">
+		<h3>FAQ</h3>
+		<p><strong>You spelled linux wrong. Is something wrong with you?</strong><br/>No, I spelled lunix right. Additionally, no to my knowledge nothing is wrong with me.</p>
+		<p><strong>Why would you do this?</strong><br/><a href="http://ludumdare.com">Ludum Dare 26</a> </p>
+		<p><strong>Will you update this game later?</strong><br/>Possibly, It is also on <a href="https://github.com/lbrunjes/EvilUnixAdmin">github</a> soon</p>
+		<p><strong>Do you hate everyone?</strong><br/>Not everyone. </p>
+		<p><strong>Sometimes I cant move the guy by pressing the arrow keys. Why?</strong><br/>You need to click back on the game. Otherwise, it can't see the button presses.</p>
+	</div>
+	<footer id="footer">
+	 	
+	</footer>
+</div>
+<script>
+document.getElementById("canvas").focus();
+</script>
 </body>
 </html>
