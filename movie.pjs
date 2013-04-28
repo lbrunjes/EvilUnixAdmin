@@ -8,9 +8,16 @@
 
 
 class movie{
-	float chartime = 100;
+	float chartime = 50;
 	int frame =0;
-	int lastchangeMillis();
+	int lastchangeMillis =0;
+	int start=0;
+	
+	public movie(){
+		console.log("new movie");
+		start=millis();
+		lastchangeMillis=start;
+	}
 	
 	var subtitles = [
 		"So, It has come to this.",
@@ -18,17 +25,86 @@ class movie{
 		"have gone too far.  They have struck the heart of our empire",
 		"the snack machine is no longer on the unix network",
 		"Physical inspection revealed that the machine is abesnt",
-		"We believe that it has been moved to their den.",
+		"We believe that it has been moved to their den.",//5
 		"It falls to you young admin to go on a quest",
-		"a quest to delvier snacky cakes from their closed source oppresssion",
+		"a quest to deliver snacky cakes from their closed source oppresssion",
 		"They will try to track you by the ticketing system",
 		"Avoid creating new tickets. Avoid users.",
-		"New tickets must be closed from your desk to avoid suspicion.", 
+		"New tickets must be closed from your desk to avoid suspicion.", //10
 		"They are monitoring all of us now.",
 		"Good luck"
-		
-		
 	];
+	
+	public void draw(){
+		if(subtitles[frame].length*chartime + lastchangeMillis < millis()){
+			frame++;
+			lastchangeMillis= millis();
+			console.log(subtitles[frame]);
+			if(frame >= subtitles.length){
+				gameState = CHARACTER;
+				return;
+			}
+		}
+		background(0);
+		if(img.intro){
+			image(img.intro,0,0,width,height);
+
+			fill(128);
+			rect(48,320,256,64);
+			fill(0);
+
+			switch(frame){
+				case 0:				
+					text("root@admin.job.com" , 48,368 );
+				break;
+				case 1:
+				case 2:
+					image(img.winadmin,32,32);
+					text("root@admin.job.com" , 48,368 );
+				break;
+				case 3:
+					image(img.stairs, 32,32,96,96);
+					text("go up stairs" , 48,368 );
+				break;
+				case 4:
+					image(img.snacks, 32,32,96,96);
+					text("find this" , 48,368 );
+				break;
+				case 5:
+				case 6:
+					image(img.dude.front, 32,32,96,96);
+					text(" use arrow keys" , 48,368 );
+				break;
+				
+				case 7:
+
+					image(img.main, -32,-32,128,128);
+					text("mmm tasty" , 48,368 );
+				break;
+
+				case 8:				
+				case 9:
+
+						image(img.ticket, 32,32,64,64);
+						text("avoid" , 48,368 );
+				break;
+				
+					case 10:
+					case 11:
+						image(img.desk,32,32);
+					break;
+			
+									
+			}
+		}
+		fill(255);
+		textAlign(CENTER);
+		text(subtitles[frame], width/2, height -24);
+		textAlign(LEFT);
+		
+		
+		
+	}
 
 }
 

@@ -18,6 +18,7 @@ class worldObject{
 	boolean blocks=false;
 	boolean friendly=false;
 	boolean remove =false;
+	PImage tile = false;
 	
 	
 	public worldObject(int _x, int _y)
@@ -33,7 +34,12 @@ class worldObject{
 			translate(x,y);
 			rotate(r);
 			rectMode(CENTER);
-			rect(0,0,w,h);
+			if(!tile){
+				rect(0,0,w,h);
+			}
+			else{
+				image(tile,w/-2,h/-2,w,h);
+			}
 		popMatrix();
 	}
 	
@@ -65,7 +71,7 @@ class worldObject{
 	}
 	
 	public bool collide(worldObject o){
-//		console.log("collide",o,this, abs(x - o.x) <= w/2+o.w/2,abs(y-o.y) <= h/2 + o.h/2);
+	//	console.log("collide",o,this, abs(x - o.x) <= w/2+o.w/2,abs(y-o.y) <= h/2 + o.h/2);
 		if(	!this.collides || 
 			!o.collides ||
 			o.friendly == this.friendly){
@@ -76,7 +82,8 @@ class worldObject{
 		return inside(o.x,o.y, o);
 	}
 	public bool inside(int _x , int _y, worldObject o){
-		if(abs(x - _x) <= w/2+o.w/2 && abs(y- _y) <= h/2 + o.h/2){
+		if(	abs(x - _x) < w/2 + o.w/2 &&
+			 	abs(y - _y) < h/2 + o.h/2){
 			this.remove =true;
 			o.remove=true;
 			return true;

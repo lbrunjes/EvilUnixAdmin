@@ -9,6 +9,8 @@
 
 public class goal extends worldObject{
 
+	boolean last =false;
+
 	public goal(int _x, int _y){
 	
 		x = _x;
@@ -25,9 +27,13 @@ public class goal extends worldObject{
 		stroke(s);
 		pushMatrix();
 			translate(x,y);
-			rotate(r);
-			rectMode(CENTER);
-			ellipse(0,0,w,h);
+	
+			if(last){
+				image(img.snacks, w/-2,h/-2,w,h);
+			}
+			else{
+				image(img.stairs, w/-2,h/-2,w,h);
+			}
 		popMatrix();
 	}
 	

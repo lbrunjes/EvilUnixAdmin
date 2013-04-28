@@ -21,6 +21,15 @@ class effect extends worldObject{
 		r=angle;
 	}
 	
-	
+	public void draw(){
+		fill(f);
+		stroke(s);
+		pushMatrix();
+			translate(x,y);
+			rotate(r);
+			rectMode(CENTER);
+			image(img.ticket, w/-2,h/-2,w,h);
+		popMatrix();
+	}
 
 }

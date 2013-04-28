@@ -17,10 +17,12 @@ public class wall extends worldObject{
 	}
 	
 	public bool inside(int _x , int _y, worldObject o){
-		if(abs(x - _x) <= w/2+o.w/2 && abs(y- _y) <= h/2 + o.h/2){
+		if(abs(x - _x) < w/2+o.w/2 &&
+			 abs(y- _y) < h/2 + o.h/2){
+
 			return true;
 		}
-		return false
+		return false;
 	}
 	
 

@@ -16,53 +16,63 @@ class player extends worldObject{
 	String name = false;
 	weapon wep;
 	
+	var pressed = {
+		left:false,
+		right:false,
+		up:false,
+		down:false
+	};
+	
 	public player(){
 		x=0;
 		y=0;
-		speed=4;
-		wep = new weapon();
-		wep.projFriendly =true;
+		speed=40;
+		//wep = new weapon();
+		//wep.projFriendly =true;
 		collides =true;
 		friendly =true;
 		f = color(0,0,255);
 		s = color(255);
 	}
 	
-	public void handleKeyPress(int code){
+	public void handleKeyPress(int code, bool up){
 		
 		switch(code){
 			case 39:
-			case 65:
-				if(canMove(x+speed, y, this)){
-					x+=speed;
-				}
+			case 68:
+				pressed.left=up;
+				
 			break;
 			case 37:
-			case 87:
-				if(canMove(x-speed, y, this)){
-					x-=speed;
-				}
+			case 65:
+				pressed.right=up;
 			break;
-			case 40:
-			case 68:
-				if(canMove(x, y+speed, this)){
-					y+=speed;
-				}
-			break;
+			
 			case 38:
+			case 87:
+				pressed.down =up;
+			break;
+			
+			case 40:
 			case 83:
-				if(canMove(x, y-speed, this)){
-					y-=speed;
-				}
+				pressed.up=up;
 			break;
 			
 			case 32://space
 			case 10://enter
 			
-				click();
+
 			break;
 
 		}		
+		
+		if(pressed.left||pressed.right||pressed.up||pressed.down){
+			document.getElementById("steps").play();
+		}
+		else{
+			document.getElementById("steps").pause();
+		}
+		
 	
 	}
 	
@@ -70,11 +80,21 @@ class player extends worldObject{
 		//var m = mouseWorldCoords();
 		
 //		r = atan2( y - m[1],x- m[0] );
-		
-		if(level.Goal.collide(this)){
-			//TODO display some sort of victory note.
-			gameState =WON;
-		}
+//console.log(pressed);
+			if(pressed.right && canMove(x+speed*deltaT, y, this)){
+			
+					x+=speed*deltaT;
+				}
+				if(pressed.left && canMove(x-speed*deltaT, y, this)){
+					x-=speed*deltaT;
+				}
+				if(pressed.down && canMove(x, y+speed*deltaT, this)){
+					y+=speed*deltaT;
+				}
+				if(pressed.up && canMove(x, y-speed*deltaT, this)){
+					y-=speed*deltaT;
+				}
+
 		
 	}
 	
@@ -83,14 +103,18 @@ class player extends worldObject{
 		stroke(s);
 		pushMatrix();
 			translate(x,y);
-			//rotate(r);
-			rectMode(CENTER);
-			if(r >0 && r <PI){
-				image(img.dude.back, w/-2,h/-2,w,h);
-			}
-			else{
-				image(img.dude.front,w/-2,h/-2,w,h);
-			}
+			
+			
+			beginShape();
+				vertex(w/2,h/2);
+				vertex(w/2,h/6);
+				bezierVertex(w/4,h/-6,w/-4,h/-6, w/-2,h/6);
+				vertex(w/-2,h/2);
+			endShape(CLOSE);
+				
+				ellipse(0,h/-4,w/2,h/2);
+			
+			
 			
 			if(wep){
 				wep.draw();
@@ -109,6 +133,7 @@ class player extends worldObject{
 	}
 	
 	public void onRemove(){
+		document.getElementById("ugh").play();
 		gameState = LOST;
 	}
 }
